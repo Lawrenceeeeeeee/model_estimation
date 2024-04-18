@@ -8,5 +8,5 @@ if __name__ == '__main__':
     index = np.loadtxt("data/index.txt", delimiter=",", dtype=bool)
     names = np.loadtxt("data/names.txt", delimiter=",", dtype=str)
     osr = me.ModelEstimation(x, y, index, names)
-    res = osr.cross_validation(10)
+    res = osr.osr()
     print(res)

@@ -98,19 +98,18 @@ class ModelEstimation:
         xtrain_scale = self.xtrain - xtrain_mean
         ytrain_mean = self.ytrain.mean()
         ytrain_scale = self.ytrain - ytrain_mean
-        xtx = np.dot(xtrain_scale.T, xtrain_scale)
-        xty = np.dot(xtrain_scale.T, ytrain_scale)
-        
+        # xtx = np.dot(xtrain_scale.T, xtrain_scale)
+        # xty = np.dot(xtrain_scale.T, ytrain_scale)
+        xtx = np.dot(self.xtrain.T, self.xtrain)
         xtx_center = xtx - n * np.outer(xtrain_mean, xtrain_mean)
         xty = np.dot(self.xtrain.T, self.ytrain)
         xty_center = xty- n * ytrain_mean * xtrain_mean
-        
         re_b_1 = [self._solve_pos(xtx_center[np.ix_(ind, ind)], xty_center[ind])
                 for ind in inds]
         re_b_0 = [ytrain_mean - np.dot(xtrain_mean[ind], b_1_)
                 for ind, b_1_ in zip(inds, re_b_1)]
         re_b = [(b_0_, b_1_) for b_0_, b_1_ in zip(re_b_0, re_b_1)]
-        
+
         # re_b = [ols(xtrain[:, ind], ytrain) for ind in inds]
         err_test = np.array([self.predict_err(self.xtest[:, ind], self.ytest, b_) 
                             for ind, b_ in zip(inds,re_b)])
@@ -118,10 +117,10 @@ class ModelEstimation:
                         for ind, b_ in zip(inds,re_b)])
         d = np.array(list([len(ind) for ind in inds]))
         # print(d)
-        opt_names = self.names[list(inds[np.argmin(err_test)])]
+        # print(names[list(inds[np.argmin(err_test)])])
         # re_b[np.argmin(err_test)]
-        res = re_b[np.argmin(err_test)]
-        return opt_names, res, rss[np.argmin(err_test)], err_test[np.argmin(err_test)], d[np.argmin(err_test)]
+        # xty
+        return names[inds[np.argmin(err_test)]], re_b[np.argmin(err_test)], rss[np.argmin(err_test)], err_test[np.argmin(err_test)], d[np.argmin(err_test)]
     
     def cv_err_i_fun(self, index, inds):
         # index = indexs[0]
@@ -174,5 +173,12 @@ class ModelEstimation:
         return np.min(cv_err), self.names[inds[np.argmin(cv_err)]] 
     
     
-        
+if __name__ == '__main__':
+    x = np.loadtxt("data/x.txt", delimiter=",")
+    y = np.loadtxt("data/y.txt", delimiter=",")
+    index = np.loadtxt("data/index.txt", delimiter=",", dtype=bool)
+    names = np.loadtxt("data/names.txt", delimiter=",", dtype=str)
+    analysis = ModelEstimation(x, y, index, names)
+    res = analysis.osr()
+    print(res)   
         
