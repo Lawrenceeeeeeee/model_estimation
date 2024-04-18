@@ -120,7 +120,7 @@ class ModelEstimation:
         # print(names[list(inds[np.argmin(err_test)])])
         # re_b[np.argmin(err_test)]
         # xty
-        return names[inds[np.argmin(err_test)]], re_b[np.argmin(err_test)], rss[np.argmin(err_test)], err_test[np.argmin(err_test)], d[np.argmin(err_test)]
+        return self.names[inds[np.argmin(err_test)]], re_b[np.argmin(err_test)], rss[np.argmin(err_test)], err_test[np.argmin(err_test)], d[np.argmin(err_test)]
     
     def cv_err_i_fun(self, index, inds):
         # index = indexs[0]
